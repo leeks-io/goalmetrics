@@ -33,7 +33,6 @@ import {
   LogOut,
   LogIn
 } from 'lucide-react';
-import { useAuth } from '@/components/AuthProvider';
 import { GoogleGenAI } from "@google/genai";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -52,7 +51,6 @@ interface Message {
 type ViewType = 'chat' | 'matches' | 'history' | 'settings';
 
 export default function GoalMetrics() {
-  const { user, signIn, logout, loading: authLoading } = useAuth();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [currentView, setCurrentView] = useState<ViewType>('chat');
@@ -199,7 +197,7 @@ export default function GoalMetrics() {
         model: "gemini-3-flash-preview",
         contents: { parts },
         config: {
-          systemInstruction: `You are GOALMETRICS, an expert sports analyst and prediction AI. Your goal is to provide data-driven predictions for sports matches (Football, Basketball, Tennis, etc.). Analyze team form, player stats, head-to-head records, and other relevant metrics to give the most accurate predictions possible. Use Google Search to get real-time data on upcoming matches, current team form, and injury updates. If the user provides an image, analyze it for match stats, lineups, or odds and incorporate those into your prediction. ALWAYS present data-heavy information (like match stats, team comparisons, or league tables) in clean Markdown tables. Avoid scattered elements; keep the layout structured and professional. Always include a disclaimer that sports predictions are not guaranteed and should be used for informational purposes only. ${user ? `The user's name is ${user.displayName}.` : ''}`,
+          systemInstruction: `You are GOALMETRICS, an expert sports analyst and prediction AI. Your goal is to provide data-driven predictions for sports matches (Football, Basketball, Tennis, etc.). Analyze team form, player stats, head-to-head records, and other relevant metrics to give the most accurate predictions possible. Use Google Search to get real-time data on upcoming matches, current team form, and injury updates. If the user provides an image, analyze it for match stats, lineups, or odds and incorporate those into your prediction. ALWAYS present data-heavy information (like match stats, team comparisons, or league tables) in clean Markdown tables. Avoid scattered elements; keep the layout structured and professional. Always include a disclaimer that sports predictions are not guaranteed and should be used for informational purposes only.`,
           tools: [{ googleSearch: {} }],
         }
       });
@@ -276,23 +274,13 @@ export default function GoalMetrics() {
               </motion.p>
 
                 <div className="flex flex-wrap gap-4">
-                  {user ? (
-                    <button
-                      onClick={() => setIsChatOpen(true)}
-                      className="px-8 py-4 bg-white text-black font-bold rounded-full flex items-center gap-2 hover:bg-emerald-500 transition-colors group"
-                    >
-                      START CONVERSATION
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={signIn}
-                      className="px-8 py-4 bg-emerald-500 text-black font-bold rounded-full flex items-center gap-2 hover:bg-emerald-400 transition-colors group"
-                    >
-                      SIGN IN TO START
-                      <LogIn className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                  )}
+                  <button
+                    onClick={() => setIsChatOpen(true)}
+                    className="px-8 py-4 bg-white text-black font-bold rounded-full flex items-center gap-2 hover:bg-emerald-500 transition-colors group"
+                  >
+                    START CONVERSATION
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
                   <button className="px-8 py-4 border border-zinc-800 rounded-full font-bold hover:bg-zinc-900 transition-colors">
                     VIEW DOCUMENTATION
                   </button>
@@ -423,26 +411,15 @@ export default function GoalMetrics() {
               </div>
 
               <div className="p-4 border-t border-zinc-800/50">
-                {user && (
-                  <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-xl border border-zinc-800/50">
-                    <div className="relative w-8 h-8 flex-shrink-0">
-                      <Image 
-                        src={user.photoURL || ''} 
-                        alt={user.displayName || 'User'} 
-                        fill
-                        className="rounded-full border border-zinc-700 object-cover"
-                        referrerPolicy="no-referrer"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-bold truncate">{user.displayName}</p>
-                      <p className="text-[8px] text-zinc-500 truncate uppercase tracking-widest">Pro Analyst</p>
-                    </div>
-                    <button onClick={logout} className="p-1.5 hover:bg-zinc-700 rounded-lg text-zinc-500 hover:text-red-500 transition-colors">
-                      <LogOut className="w-4 h-4" />
-                    </button>
+                <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-xl border border-zinc-800/50">
+                  <div className="w-8 h-8 bg-emerald-500 rounded flex items-center justify-center">
+                    <Sparkles className="text-black w-4 h-4" />
                   </div>
-                )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] font-bold truncate">Open Access Mode</p>
+                    <p className="text-[8px] text-zinc-500 truncate uppercase tracking-widest">Free & Open Source</p>
+                  </div>
+                </div>
               </div>
             </motion.aside>
 

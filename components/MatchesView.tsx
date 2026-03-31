@@ -38,6 +38,7 @@ export default function MatchesView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState('');
+  const [mounted, setMounted] = useState(false);
 
   const fetchMatches = async () => {
     setLoading(true);
@@ -98,6 +99,7 @@ export default function MatchesView() {
   };
 
   useEffect(() => {
+    setMounted(true);
     fetchMatches();
   }, []);
 
@@ -254,7 +256,7 @@ export default function MatchesView() {
           <span className="text-[8px] font-mono text-zinc-600 uppercase tracking-widest">Data Latency: ~2s • Source: Google Search Grounding</span>
         </div>
         <div className="text-[8px] font-mono text-zinc-600 uppercase tracking-widest">
-          Last Updated: {new Date().toLocaleTimeString()}
+          Last Updated: {mounted ? new Date().toLocaleTimeString() : '--:--'}
         </div>
       </div>
     </div>
